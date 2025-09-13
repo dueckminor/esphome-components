@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Schiebetor Animation</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f5f5f5;
+            font-family: sans-serif;
+            user-select: none;
+        }
+
+        .scene {
+            position: relative;
+            width: 1000px;
+            height: 350px;
+            border: 5px solid #333;
+            background: linear-gradient(to right, #e0e0e0 0%, #e0e0e0 45%, #a0a0a0 45%, #a0a0a0 100%);
+            overflow: hidden;
+        }
+
+        .scene.dragging {
+            cursor: grabbing;
+        }
+
+        .gate {
+            position: absolute;
+            bottom: 20px;
+            width: 520px;
+            height: 240px;
+            background: #bba;
+            border: 2px solid #1e3a5f;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 10px;
+            z-index: 2;
+            box-shadow: #000 0px 4px 8px;
+
+        }
+
+        .handle {
+            cursor: grab;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 25px;
+            height: 80px;
+            background: #777;
+            border: 2px solid #000;
+            border-radius: 10px;
+        }
+
+        .magnet-stack {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 120px;
+            align-self: flex-end;
+            margin: 10px;
+            pointer-events: none;
+        }
+
+        .bit {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background-color: #777;
+            border: 2px solid #000;
+            margin: 2px 0;
+        }
+
+        .bit.one {
+            background-color: #aaa;
+            border: 2px solid #000;
+        }
+
+        .bit.top {
+            transform: translateX(7px);
+        }
+
+        .bit.bottom {
+            transform: translateX(-7px);
+        }
+
+        .bit.pos-0 {
+            transform: translateX(2px);
+        }
+
+        .bit.pos-2 {
+            transform: translateX(-2px);
+        }
+
+        .sensors {
+            position: absolute;
+            bottom: 30px;
+            width: 100%;
+            height: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            z-index: 3;
+        }
+
+        .sensor-stack {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            height: 100%;
+            margin-top: 0;
+        }
+
+        .sensor {
+            width: 18px;
+            height: 18px;
+            background: darkgreen;
+            border-radius: 4px;
+            border: 2px solid #000;
+            transition: background 0.2s;
+        }
+
+        .sensor.active {
+            background: limegreen;
+        }
+
+        .status-box {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 10px;
+            z-index: 4;
+        }
+
+        .box {
+            width: 60px;
+            height: 40px;
+            background: white;
+            border: 2px solid #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 18px;
+            border-radius: 4px;
+            box-shadow: #000 0px 4px 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="scene" id="scene">
+        <div class="gate" id="gate">
+            <div class="handle" id="handle"></div>
+            <div class="magnet-stack">
+                <div class="bit one top"></div>
+                <div class="bit nul pos-2"></div>
+                <div class="bit nul pos-1"></div>
+                <div class="bit nul pos-0"></div>
+                <div class="bit one bottom"></div>
+            </div>
+            <div class="magnet-stack">
+                <div class="bit one top"></div>
+                <div class="bit nul pos-2"></div>
+                <div class="bit nul pos-1"></div>
+                <div class="bit one pos-0"></div>
+                <div class="bit one bottom"></div>
+            </div>
+            <div class="magnet-stack">
+                <div class="bit one top"></div>
+                <div class="bit nul pos-2"></div>
+                <div class="bit one pos-1"></div>
+                <div class="bit nul pos-0"></div>
+                <div class="bit one bottom"></div>
+            </div>
+            <div class="magnet-stack">
+                <div class="bit one top"></div>
+                <div class="bit nul pos-2"></div>
+                <div class="bit one pos-1"></div>
+                <div class="bit one pos-0"></div>
+                <div class="bit one bottom"></div>
+            </div>
+            <div class="magnet-stack">
+                <div class="bit one top"></div>
+                <div class="bit one pos-2"></div>
+                <div class="bit nul pos-1"></div>
+                <div class="bit nul pos-0"></div>
+                <div class="bit one bottom"></div>
+            </div>
+            <div class="magnet-stack">
+                <div class="bit one top"></div>
+                <div class="bit one pos-2"></div>
+                <div class="bit nul pos-1"></div>
+                <div class="bit one pos-0"></div>
+                <div class="bit one bottom"></div>
+            </div>
+            <div class="magnet-stack">
+                <div class="bit one top"></div>
+                <div class="bit one pos-2"></div>
+                <div class="bit one pos-1"></div>
+                <div class="bit nul pos-0"></div>
+                <div class="bit one bottom"></div>
+            </div>
+            <div class="magnet-stack">
+                <div class="bit one top"></div>
+                <div class="bit one pos-2"></div>
+                <div class="bit one pos-1"></div>
+                <div class="bit one pos-0"></div>
+                <div class="bit one bottom"></div>
+            </div>
+        </div>
+
+        <div class="sensors" id="sensors">
+            <div class="sensor-stack">
+                <div class="sensor" id="hall-sensor-top"></div>
+                <div class="sensor" id="hall-sensor-2"></div>
+                <div class="sensor" id="hall-sensor-1"></div>
+                <div class="sensor" id="hall-sensor-0"></div>
+                <div class="sensor" id="hall-sensor-bottom"></div>
+            </div>
+        </div>
+
+        <div class="status-box">
+            <div>
+                <div>Sensor</div>
+                <div class="box" id="position-box" style="color: #aaa;">?</div>
+            </div>
+            <div>
+                <div>Position</div>
+                <div class="box" id="position-box-approved">?</div>
+            </div>
+            <div>
+                <div>Direction</div>
+                <div class="box" id="direction-box">→</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const gate = document.getElementById("gate");
+        const handle = document.getElementById("handle");
+        const sensors = document.querySelectorAll(".sensor-stack .sensor");
+        const scene = document.getElementById("scene");
+        const positionBox = document.getElementById("position-box");
+        const positionBoxApproved = document.getElementById("position-box-approved");
+        const directionBox = document.getElementById("direction-box");
+
+        const sensorTop = document.getElementById("hall-sensor-top");
+        const sensorDir2 = document.getElementById("hall-sensor-2");
+        const sensorDir1 = document.getElementById("hall-sensor-1");
+        const sensorDir0 = document.getElementById("hall-sensor-0");
+        const sensorBottom = document.getElementById("hall-sensor-bottom");
+
+        let dragging = false;
+        let offsetX = 0;
+        let lastX = 0;
+
+        let previousTop = false;
+        let previousBottom = false;
+
+        handle.addEventListener('mousedown', e => {
+            dragging = true;
+            offsetX = e.clientX - gate.offsetLeft;
+            lastX = e.clientX;
+            scene.classList.add('dragging');
+        });
+
+        window.addEventListener('mouseup', () => {
+            dragging = false;
+            scene.classList.remove('dragging');
+        });
+
+        function updateSensors() {
+            const bits = gate.querySelectorAll(".bit.one");
+            sensors.forEach(sensor => sensor.classList.remove("active"));
+            bits.forEach(bit => {
+                const bRect = bit.getBoundingClientRect();
+                sensors.forEach(sensor => {
+                    const sRect = sensor.getBoundingClientRect();
+                    if (!(bRect.right < sRect.left || bRect.left > sRect.right || bRect.bottom < sRect.top || bRect.top > sRect.bottom)) {
+                        sensor.classList.add("active");
+                    }
+                });
+            });
+
+            dirBottom = sensorBottom.classList.contains("active");
+            dirTop = sensorTop.classList.contains("active");
+
+            position = (sensorDir0.classList.contains("active")) ? 1 : 0;
+            position += (sensorDir1.classList.contains("active")) ? 2 : 0;
+            position += (sensorDir2.classList.contains("active")) ? 4 : 0;
+
+            // display the detected position
+            // (might be wrong if hall sensor is not centered)
+            positionBox.textContent = position;
+
+            // only if bottom and top sensors are active the position is valid
+            if (dirBottom && dirTop) {
+                positionBoxApproved.textContent = position;
+            }
+
+            // determine direction.
+            //
+            // top-sensor    ...00110...00110...00110...
+            // bottom-sensor ...01100...01100...01100...
+            //
+            // check if the bottom or top sensor changed
+            if ((dirBottom != previousBottom) || (dirTop != previousTop)) {
+                // we detect a direction change only top and bottom sensor now
+                // have different states, but had the same state before
+                if ((dirBottom != dirTop) && (previousBottom == previousTop)) {
+                    let dir = dirTop;
+                    if (previousBottom)
+                        dir = !dir;
+                    directionBox.textContent = dir ? '→' : '←';
+                }
+                previousBottom = dirBottom;
+                previousTop = dirTop;
+            }
+        }
+
+        window.addEventListener('mousemove', e => {
+            if (dragging) {
+                let newLeft = e.clientX - offsetX;
+                newLeft = Math.max(0, Math.min(scene.clientWidth - gate.clientWidth, newLeft));
+                gate.style.left = newLeft + 'px';
+
+            }
+            updateSensors();
+        });
+
+        updateSensors()
+    </script>
+</body>
+
+</html>
