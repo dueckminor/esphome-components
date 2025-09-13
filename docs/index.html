@@ -325,7 +325,7 @@
         window.addEventListener('mousemove', e => {
             if (dragging) {
                 let newLeft = e.clientX - offsetX;
-                newLeft = Math.max(0, Math.min(scene.clientWidth - gate.clientWidth, newLeft));
+                newLeft = Math.max(0, Math.min(scene.clientWidth - gate.clientWidth - 5, newLeft));
 
                 const currentLeft = parseInt(gate.style.left) || 0;
                 const targetLeft = newLeft;
