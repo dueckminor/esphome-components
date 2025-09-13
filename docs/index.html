@@ -278,16 +278,6 @@
     </div>
     <div>
         <p>
-            <b>Warning:</b> If you slide the gate too fast, the position and direction
-            detection might fail. This is because moving the gate in the browser
-            is not analog. The gate jumps from one position to another, so
-            if it jumps over a magnet group, the sensors will not detect it.
-        </p>
-        <p>
-            A real sliding gate driven by a motor will move so slow that even
-            a tiny micro controller will be able to detect all state transitions.
-        </p>
-        <p>
             This illustration is not to scale. In reality, the
             magnets are much smaller and the distances between the magnet groups
             are much larger. This illustration serves only for demonstration purposes.
@@ -331,6 +321,27 @@
             dragging = false;
             scene.classList.remove('dragging');
         });
+
+        window.addEventListener('mousemove', e => {
+            if (dragging) {
+                let newLeft = e.clientX - offsetX;
+                newLeft = Math.max(0, Math.min(scene.clientWidth - gate.clientWidth, newLeft));
+
+                const currentLeft = parseInt(gate.style.left) || 0;
+                const targetLeft = newLeft;
+                const step = currentLeft < targetLeft ? 1 : -1;
+                
+                for (let pos = currentLeft; pos !== targetLeft; pos += step) {
+                    gate.style.left = pos + 'px';
+                    updateSensors();
+                }
+                gate.style.left = targetLeft + 'px';
+
+            }
+            updateSensors();
+        });
+
+        updateSensors()
 
         function updateSensors() {
             const bits = gate.querySelectorAll(".bit.one");
@@ -381,17 +392,6 @@
             }
         }
 
-        window.addEventListener('mousemove', e => {
-            if (dragging) {
-                let newLeft = e.clientX - offsetX;
-                newLeft = Math.max(0, Math.min(scene.clientWidth - gate.clientWidth, newLeft));
-                gate.style.left = newLeft + 'px';
-
-            }
-            updateSensors();
-        });
-
-        updateSensors()
     </script>
 </body>
 
