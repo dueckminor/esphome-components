@@ -3,12 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Schiebetor Animation</title>
+    <title>Sliding Gate Animation</title>
     <style>
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
             height: 100vh;
             background: #f5f5f5;
             font-family: sans-serif;
@@ -156,6 +153,43 @@
 </head>
 
 <body>
+    <div style="text-align: center; margin-bottom: 20px;"></div>
+        <h2>Sliding Gate with Hall Sensors</h2>
+        <p>
+            This is an interactive demonstration of how magnets and hall sensors
+            can be used to determine a sliding gate's position and direction.
+        </p>
+        <p>
+            Drag the handle to slide the gate left or right. The sensors will
+            detect the position and direction based on the magnet bits.
+        </p>
+        <p>
+            The magnets are placed along the gate's path, In groups of up to
+            five magnets. The top and bottom magnets are always installed 
+            (<tt>1</tt>), the three magnets in between can be either <tt>0</tt>
+            (no magnet) or <tt>1</tt> (magnet).
+        </p>
+        <p>
+            Most of the time the sensors will report the wrong position, only
+            when the hall sensor is centered in one of the magnet groups the
+            reported position is correct. To be able to detect that the hall 
+            sensor is centered, the top and bottom magnets are always installed
+            and the bottom magnet is placed a little bit to the left while the
+            top magnet is placed a little bit to the right.
+        </p>
+        <p>
+            This ensures that the top and bottom sensors are only both active
+            when the hall sensor is centered in a magnet group. And the three
+            middle sensors will then report the correct position.
+        </p>
+        <p>
+            The direction is determined by the top and bottom sensors only.
+            The direction changes when the top and bottom sensors change their
+            state and have different states, but had the same state before.
+            This way the direction can be determined even when the position
+            is not correct.
+        </p>
+    </div>
     <div class="scene" id="scene">
         <div class="gate" id="gate">
             <div class="handle" id="handle"></div>
@@ -241,6 +275,27 @@
                 <div class="box" id="direction-box">→</div>
             </div>
         </div>
+    </div>
+    <div>
+        <p>
+            <b>Warning:</b> If you slide the gate too fast, the position and direction
+            detection might fail. This is because moving the gate in the browser
+            is not analog. The gate jumps from one position to another, so
+            if it jumps over a magnet group, the sensors will not detect it.
+        </p>
+        <p>
+            A real sliding gate driven by a motor will move so slow that even
+            a tiny micro controller will be able to detect all state transitions.
+        </p>
+        <p>
+            This illustration is not to scale. In reality, the
+            magnets are much smaller and the distances between the magnet groups
+            are much larger. This illustration serves only for demonstration purposes.
+        </p>
+        <p>
+            In my case a magnet group has a width of 1 cm and the distance
+            between two magnet groups is about 50 cm.
+        </p>
     </div>
 
     <script>
