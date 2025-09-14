@@ -36,7 +36,7 @@ fully.
 It needs a microcontroller with at least 6 GPIO pins available (one output
 and 5 input pins). I'm using an ESP8266 with the following configuration:
 
-### Configuration
+### Configuration `sliding_gate`
 
 ```yaml
 external_components:
@@ -46,9 +46,6 @@ external_components:
 esphome:
   name: ...
   friendly_name: ...
-
-esp8266:
-  board: d1_mini
 
 cover:
   - platform: sliding_gate
@@ -61,4 +58,129 @@ cover:
     pin_pos_2: D6
     pin_dir_1: D7
     pin_relay: D1
+```
+
+## `air_shutter` component
+
+This component is used to control an air shutter with ESPHome. Compared with
+normal thermostats, air shutters are not able to heat or cool a room. They can
+just increase or decrease the airflow. So, to control the temperature of a room,
+you need two switches: one to increase the airflow (cool more) and one to decrease
+the airflow (cool less).
+
+In my case, I've connect 4 air shutters to one ESP8266 and needed therefor 8
+relays and used a PCF8574 I/O expander to control them.
+
+The relays are wired in a way, that only one output can be active at a time.
+If both outputs are active, the air shutter will not move. This is done to avoid
+damage to the air shutter.
+
+<svg width="400" height="150" xmlns="http://www.w3.org/2000/svg">
+  <!-- connection between relais #1 and #2-->
+  <line x1=90 y1=35 x2=90 y2=62 stroke="#000" stroke-width="2"/>
+  <line x1=90 y1=62 x2=100 y2=62 stroke="#000" stroke-width="2"/>
+  <line x1=100 y1=62 x2=100 y2=90 stroke="#000" stroke-width="2"/>
+  <!-- connections to output-->
+  <line x1=100 y1=10 x2=150 y2=10 stroke="#000" stroke-width="2"/>
+  <text x=155 y=14>L input</text>
+  <line x1=110 y1=35 x2=150 y2=35 stroke="#000" stroke-width="2"/>
+  <text x=155 y=39>L1 (close)</text>
+  <line x1=110 y1=115 x2=150 y2=115 stroke="#000" stroke-width="2"/>
+  <text x=155 y=119>L2 (open)</text>
+  <!-- Relais #1-->
+  <rect x="10" y="10" width="50" height="25" fill="#ffffff" stroke="#000" stroke-width="2"/>
+  <line x1=20 y1=35 x2=50 y2=10 stroke="#000" stroke-width="2"/>
+  <line x1="60" y1="22" x2="90" y2="22" stroke="#333" stroke-width="2" stroke-dasharray="6,6"/>
+  <line x1="100" y1="10" x2="90" y2="35" stroke="#333" stroke-width="4"/>
+  <circle cx="100" cy="10" r="3" fill="#fff" stroke="#333" stroke-width="2"/>
+  <circle cx="90" cy="35" r="3" fill="#fff" stroke="#333" stroke-width="2"/>
+  <circle cx="110" cy="35" r="3" fill="#fff" stroke="#333" stroke-width="2"/>
+  <!-- Relais #2-->
+  <rect x="10" y="90" width="50" height="25" fill="#ffffff" stroke="#000" stroke-width="2"/>
+  <line x1=20 y1=115 x2=50 y2=90 stroke="#000" stroke-width="2"/>
+  <line x1="60" y1="102" x2="90" y2="102" stroke="#333" stroke-width="2" stroke-dasharray="6,6"/>
+  <line x1="100" y1="90" x2="90" y2="115" stroke="#333" stroke-width="4"/>
+  <circle cx="100" cy="90" r="3" fill="#fff" stroke="#333" stroke-width="2"/>
+  <circle cx="90" cy="115" r="3" fill="#fff" stroke="#333" stroke-width="2"/>
+  <circle cx="110" cy="115" r="3" fill="#fff" stroke="#333" stroke-width="2"/>
+</svg>
+
+To control the air shutter, you need to know the current temperature of the room
+and the target temperature. This component uses two `sensor` components to get
+this information. Any Home Assistant thermostat compatible device can be used as
+user interface.
+
+As user interface, you can use any Home Assistant thermostat compatible device.
+This device has to report two temperatures: the current temperature and the
+target temperature. The `air_shutter` component compares these two temperatures
+and activates the appropriate switch to increase or decrease the airflow.
+
+It does this every two minutes. The higher the difference between current and
+target temperature, the longer the switch will be active.
+
+- diff < 0.2 °C: do nothing
+- diff < 3.0 °C: activate the appropriate switch for diff * 10 seconds/°C
+- diff >= 3.0 °C: activate the appropriate switch for 30 seconds
+
+At the end this should lead to a comfortable temperature in the room with a
+difference of less than 0.5 °C between current and target temperature.
+
+### Configuration `air_shutter`
+
+```yaml
+external_components:
+  - source:
+      type: git
+      url: https://github.com/dueckminor/mypi-esphome
+    components: [air_shutter]
+
+esphome:
+  name: ...
+  friendly_name: ...
+
+sensor:
+  - platform: homeassistant
+    id: current_temperature_room_xyz
+    entity_id: climate.temp_xyz
+    attribute: current_temperature
+  - platform: homeassistant
+    id: temperature_room_xyz
+    entity_id: climate.temp_xyz
+    attribute: temperature
+
+climate:
+  - platform: air_shutter
+    id: air_shutter_room_xyz
+    switch_cool_less: out0
+    switch_cool_more: out1
+    current_temperature: current_temperature_room_xyz
+    temperature: temperature_room_xyz
+  
+# Enable I2C
+i2c:
+
+# Enable PCF8574
+pcf8574:
+  - id: 'pcf8574_hub'
+    address: 0x20
+
+switch:
+  - platform: gpio
+    name: "out0"
+    id: out0
+    pin:
+      pcf8574: pcf8574_hub
+      number: 0
+      mode:
+        output: true
+      inverted: true
+  - platform: gpio
+    name: "out1"
+    id: out1
+    pin:
+      pcf8574: pcf8574_hub
+      number: 1
+      mode:
+        output: true
+      inverted: true
 ```
