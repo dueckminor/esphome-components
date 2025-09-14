@@ -80,11 +80,10 @@ damage to the air shutter.
 To control the air shutter, you need to know the current temperature of the room
 and the target temperature. This component uses two `sensor` components to get
 this information. Any Home Assistant thermostat compatible device can be used as
-user interface.
+user interface. I'm using Homematics `HMIP-WTH-2`, but any other device which
+reports the current and target temperature should work.
 
-As user interface, you can use any Home Assistant thermostat compatible device.
-This device has to report two temperatures: the current temperature and the
-target temperature. The `air_shutter` component compares these two temperatures
+The `air_shutter` component compares the current and target temperatures
 and activates the appropriate switch to increase or decrease the airflow.
 
 It does this every two minutes. The higher the difference between current and
