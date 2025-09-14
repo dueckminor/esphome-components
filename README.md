@@ -26,7 +26,7 @@ in a way that it is possible to detect the direction of movement.
 
 To "press" the button of the motor, I use a relay.
 
-An interactive demo can be found [here](https://dueckminor.github.io/mypi-esphome).
+An interactive demo can be found [here](https://dueckminor.github.io/esphome-components/).
 You can slide the gate and see here how sensors detect the gate's position and
 direction.
 
