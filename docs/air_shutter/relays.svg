@@ -1,0 +1,29 @@
+<svg width="230" height="125" xmlns="http://www.w3.org/2000/svg">
+  <!-- connection between relais #1 and #2-->
+  <line x1="90" y1="35" x2="90" y2="62" stroke="#000" stroke-width="2"/>
+  <line x1="90" y1="62" x2="100" y2="62" stroke="#000" stroke-width="2"/>
+  <line x1="100" y1="62" x2="100" y2="90" stroke="#000" stroke-width="2"/>
+  <!-- connections to output-->
+  <line x1="100" y1="10" x2="150" y2="10" stroke="#000" stroke-width="2"/>
+  <text x="155" y="14">L input</text>
+  <line x1="110" y1="35" x2="150" y2="35" stroke="#000" stroke-width="2"/>
+  <text x="155" y="39">L1 (close)</text>
+  <line x1="110" y1="115" x2="150" y2="115" stroke="#000" stroke-width="2"/>
+  <text x="155" y="119">L2 (open)</text>
+  <!-- Relais #1-->
+  <rect x="10" y="10" width="50" height="25" fill="#ffffff" stroke="#000" stroke-width="2"/>
+  <line x1="20" y1="35" x2="50" y2="10" stroke="#000" stroke-width="2"/>
+  <line x1="60" y1="22" x2="90" y2="22" stroke="#333" stroke-width="2" stroke-dasharray="6,6"/>
+  <line x1="100" y1="10" x2="90" y2="35" stroke="#333" stroke-width="4"/>
+  <circle cx="100" cy="10" r="3" fill="#fff" stroke="#333" stroke-width="2"/>
+  <circle cx="90" cy="35" r="3" fill="#fff" stroke="#333" stroke-width="2"/>
+  <circle cx="110" cy="35" r="3" fill="#fff" stroke="#333" stroke-width="2"/>
+  <!-- Relais #2-->
+  <rect x="10" y="90" width="50" height="25" fill="#ffffff" stroke="#000" stroke-width="2"/>
+  <line x1="20" y1="115" x2="50" y2="90" stroke="#000" stroke-width="2"/>
+  <line x1="60" y1="102" x2="90" y2="102" stroke="#333" stroke-width="2" stroke-dasharray="6,6"/>
+  <line x1="100" y1="90" x2="90" y2="115" stroke="#333" stroke-width="4"/>
+  <circle cx="100" cy="90" r="3" fill="#fff" stroke="#333" stroke-width="2"/>
+  <circle cx="90" cy="115" r="3" fill="#fff" stroke="#333" stroke-width="2"/>
+  <circle cx="110" cy="115" r="3" fill="#fff" stroke="#333" stroke-width="2"/>
+</svg>
