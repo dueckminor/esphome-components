@@ -1,4 +1,4 @@
-# mypi-esphome
+# esphome-components
 
 This repo contains some ESPHome components for my home automation.
 
@@ -40,7 +40,7 @@ and 5 input pins). I'm using an ESP8266 with the following configuration:
 
 ```yaml
 external_components:
-  - source: github://dueckminor/mypi-esp-gate
+  - source: github://dueckminor/esphome-components
     components: [sliding_gate]
   
 esphome:
@@ -102,7 +102,7 @@ difference of less than 0.5 °C between current and target temperature.
 external_components:
   - source:
       type: git
-      url: https://github.com/dueckminor/mypi-esphome
+      url: github://dueckminor/esphome-components
     components: [air_shutter]
 
 esphome:
