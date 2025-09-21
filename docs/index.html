@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en"></html>
 
 <head>
     <meta charset="UTF-8">
@@ -175,21 +175,21 @@
         </p>
         <p>
             Drag the handle to slide the gate left or right. The sensors will
-            detect the position and direction based on the magnet bits.
+            detect the position and direction based on the magnet patterns.
         </p>
         <p>
             There are two hall sensors for direction detection
-            (<span class="sensor active">a</span>,<span class="sensor active">b</span>) and three hall sensors for position detection
-            (<span class="sensor active">1</span>,<span class="sensor active">2</span>,<span class="sensor active">4</span>).
+            (<span class="sensor active">a</span>, <span class="sensor active">b</span>) and three hall sensors for position detection
+            (<span class="sensor active">1</span>, <span class="sensor active">2</span>, <span class="sensor active">4</span>).
             The position sensors represent a 3-bit binary number, where
             <span class="sensor active">1</span> is the least significant bit (LSB)
             and <span class="sensor active">4</span> is the most significant bit (MSB).
         </p>
         <p>
-            The magnets are placed along the gate's path, In groups of up to
-            five magnets. The uppermost and lowermost magnets are always installed
-            (<span class="bit one"></span>), the three magnets in between can be either <span class="bit nul"></span>
-            (no magnet) or <span class="bit one"></span> (magnet).
+            The magnets are placed along the gate's path in groups of up to
+            five magnets. The uppermost and lowermost magnets are always present
+            (<span class="bit one"></span>), while the three magnets in between can be either absent
+            (<span class="bit nul"></span>) or present (<span class="bit one"></span>).
         </p>
         <p>
             The uppermost magnet (detected by direction sensor <span class="sensor active">a</span>)
