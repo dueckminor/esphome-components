@@ -71,6 +71,7 @@
             background-color: #777;
             border: 2px solid #000;
             margin: 2px 0;
+            display: inline-block; 
         }
 
         .bit.one {
@@ -78,19 +79,19 @@
             border: 2px solid #000;
         }
 
-        .bit.top {
+        .bit.dir-a {
             transform: translateX(7px);
         }
 
-        .bit.bottom {
+        .bit.dir-b {
             transform: translateX(-7px);
         }
 
-        .bit.pos-0 {
+        .bit.pos-1 {
             transform: translateX(2px);
         }
 
-        .bit.pos-2 {
+        .bit.pos-4 {
             transform: translateX(-2px);
         }
 
@@ -114,6 +115,15 @@
             margin-top: 0;
         }
 
+        .sensor-stack-example {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            gap: 3px;
+            margin-top: 0;
+        }
+
         .sensor {
             width: 18px;
             height: 18px;
@@ -121,10 +131,14 @@
             border-radius: 4px;
             border: 2px solid #000;
             transition: background 0.2s;
+            text-align: center;
+            color: darkgreen;
+            display: inline-block; 
         }
 
         .sensor.active {
             background: limegreen;
+            color: black
         }
 
         .status-box {
@@ -164,23 +178,82 @@
             detect the position and direction based on the magnet bits.
         </p>
         <p>
+            There are two hall sensors for direction detection
+            (<span class="sensor active">a</span>,<span class="sensor active">b</span>) and three hall sensors for position detection
+            (<span class="sensor active">1</span>,<span class="sensor active">2</span>,<span class="sensor active">4</span>).
+            The position sensors represent a 3-bit binary number, where
+            <span class="sensor active">1</span> is the least significant bit (LSB)
+            and <span class="sensor active">4</span> is the most significant bit (MSB).
+        </p>
+        <p>
             The magnets are placed along the gate's path, In groups of up to
-            five magnets. The top and bottom magnets are always installed 
-            (<tt>1</tt>), the three magnets in between can be either <tt>0</tt>
-            (no magnet) or <tt>1</tt> (magnet).
+            five magnets. The uppermost and lowermost magnets are always installed
+            (<span class="bit one"></span>), the three magnets in between can be either <span class="bit nul"></span>
+            (no magnet) or <span class="bit one"></span> (magnet).
         </p>
         <p>
-            Most of the time the sensors will report the wrong position, only
-            when the hall sensor is centered in one of the magnet groups the
-            reported position is correct. To be able to detect that the hall 
-            sensor is centered, the top and bottom magnets are always installed
-            and the bottom magnet is placed a little bit to the left while the
-            top magnet is placed a little bit to the right.
+            The uppermost magnet (detected by direction sensor <span class="sensor active">a</span>)
+            is placed a little bit to the right, the lowermost magnet
+            (detected by direction sensor <span class="sensor active">b</span>)
+            is placed a little bit to the left. The three magnets in between
+            (detected by position sensors <span class="sensor active">1</span>,<span class="sensor active">2</span>,<span class="sensor active">4</span>)
+            are aligned vertically centered.
         </p>
         <p>
-            This ensures that the top and bottom sensors are only both active
-            when the hall sensor is centered in a magnet group. And the three
-            middle sensors will then report the correct position.
+            If the gate is moving the direction sensors 
+            (<span class="sensor active">a</span>,<span class="sensor active">b</span>)
+            will be activated in the following order:
+            <div style="display: flex; justify-content: left; gap: 10px; margin-top: 10px;">
+                ←
+                <div class="sensor-stack-example">
+                    <span class="sensor">a</span>
+                    <span class="sensor">b</span>
+                </div>
+                <div class="sensor-stack-example">
+                    <span class="sensor">a</span>
+                    <span class="sensor active">b</span>
+                </div>
+                <div class="sensor-stack-example">
+                    <span class="sensor active">a</span>
+                    <span class="sensor active">b</span>
+                </div>
+                <div class="sensor-stack-example">
+                    <span class="sensor active">a</span>
+                    <span class="sensor">b</span>
+                </div>
+                <div class="sensor-stack-example">
+                    <span class="sensor">a</span>
+                    <span class="sensor">b</span>
+                </div>
+                →
+                <div class="sensor-stack-example">
+                    <span class="sensor">a</span>
+                    <span class="sensor">b</span>
+                </div>
+                <div class="sensor-stack-example">
+                    <span class="sensor active">a</span>
+                    <span class="sensor">b</span>
+                </div>
+                <div class="sensor-stack-example">
+                    <span class="sensor active">a</span>
+                    <span class="sensor active">b</span>
+                </div>
+                <div class="sensor-stack-example">
+                    <span class="sensor">a</span>
+                    <span class="sensor active">b</span>
+                </div>
+                <div class="sensor-stack-example">
+                    <span class="sensor">a</span>
+                    <span class="sensor">b</span>
+                </div>
+            </div>
+        </p>
+        <p>
+            If the sensors <span class="sensor active">a</span>,<span class="sensor active">b</span>
+            are both active, the hall sensor over the center of a magnet group.
+            Only at this position, the position sensors 
+            (<span class="sensor active">1</span>,<span class="sensor active">2</span>,<span class="sensor active">4</span>)
+            will report a correct position.
         </p>
         <p>
             The direction is determined by the top and bottom sensors only.
@@ -194,77 +267,90 @@
         <div class="gate" id="gate">
             <div class="handle" id="handle"></div>
             <div class="magnet-stack">
-                <div class="bit one top"></div>
+                <div class="bit one dir-a"></div>
+                <div class="bit nul pos-4"></div>
                 <div class="bit nul pos-2"></div>
                 <div class="bit nul pos-1"></div>
-                <div class="bit nul pos-0"></div>
-                <div class="bit one bottom"></div>
+                <div class="bit one dir-b"></div>
             </div>
             <div class="magnet-stack">
-                <div class="bit one top"></div>
-                <div class="bit nul pos-2"></div>
-                <div class="bit nul pos-1"></div>
-                <div class="bit one pos-0"></div>
-                <div class="bit one bottom"></div>
-            </div>
-            <div class="magnet-stack">
-                <div class="bit one top"></div>
+                <div class="bit one dir-a"></div>
+                <div class="bit nul pos-4"></div>
                 <div class="bit nul pos-2"></div>
                 <div class="bit one pos-1"></div>
-                <div class="bit nul pos-0"></div>
-                <div class="bit one bottom"></div>
+                <div class="bit one dir-b"></div>
             </div>
             <div class="magnet-stack">
-                <div class="bit one top"></div>
+                <div class="bit one dir-a"></div>
+                <div class="bit nul pos-4"></div>
+                <div class="bit one pos-2"></div>
+                <div class="bit nul pos-1"></div>
+                <div class="bit one dir-b"></div>
+            </div>
+            <div class="magnet-stack">
+                <div class="bit one dir-a"></div>
+                <div class="bit nul pos-4"></div>
+                <div class="bit one pos-2"></div>
+                <div class="bit one pos-1"></div>
+                <div class="bit one dir-b"></div>
+            </div>
+            <div class="magnet-stack">
+                <div class="bit one dir-a"></div>
+                <div class="bit one pos-4"></div>
+                <div class="bit nul pos-2"></div>
+                <div class="bit nul pos-1"></div>
+                <div class="bit one dir-b"></div>
+            </div>
+            <div class="magnet-stack">
+                <div class="bit one dir-a"></div>
+                <div class="bit one pos-4"></div>
                 <div class="bit nul pos-2"></div>
                 <div class="bit one pos-1"></div>
-                <div class="bit one pos-0"></div>
-                <div class="bit one bottom"></div>
+                <div class="bit one dir-b"></div>
             </div>
             <div class="magnet-stack">
-                <div class="bit one top"></div>
+                <div class="bit one dir-a"></div>
+                <div class="bit one pos-4"></div>
                 <div class="bit one pos-2"></div>
                 <div class="bit nul pos-1"></div>
-                <div class="bit nul pos-0"></div>
-                <div class="bit one bottom"></div>
+                <div class="bit one dir-b"></div>
             </div>
             <div class="magnet-stack">
-                <div class="bit one top"></div>
-                <div class="bit one pos-2"></div>
-                <div class="bit nul pos-1"></div>
-                <div class="bit one pos-0"></div>
-                <div class="bit one bottom"></div>
-            </div>
-            <div class="magnet-stack">
-                <div class="bit one top"></div>
+                <div class="bit one dir-a"></div>
+                <div class="bit one pos-4"></div>
                 <div class="bit one pos-2"></div>
                 <div class="bit one pos-1"></div>
-                <div class="bit nul pos-0"></div>
-                <div class="bit one bottom"></div>
-            </div>
-            <div class="magnet-stack">
-                <div class="bit one top"></div>
-                <div class="bit one pos-2"></div>
-                <div class="bit one pos-1"></div>
-                <div class="bit one pos-0"></div>
-                <div class="bit one bottom"></div>
+                <div class="bit one dir-b"></div>
             </div>
         </div>
 
         <div class="sensors" id="sensors">
             <div class="sensor-stack">
-                <div class="sensor" id="hall-sensor-top"></div>
-                <div class="sensor" id="hall-sensor-2"></div>
-                <div class="sensor" id="hall-sensor-1"></div>
-                <div class="sensor" id="hall-sensor-0"></div>
-                <div class="sensor" id="hall-sensor-bottom"></div>
+                <div class="sensor" id="hall-sensor-a">a</div>
+                <div class="sensor" id="hall-sensor-4">4</div>
+                <div class="sensor" id="hall-sensor-2">2</div>
+                <div class="sensor" id="hall-sensor-1">1</div>
+                <div class="sensor" id="hall-sensor-b">b</div>
             </div>
         </div>
 
         <div class="status-box">
+            <div style="display: flex; align-items: center; gap: 2px; height: 80px;">
+                <div class="sensor" id="calc-pos-1">1</div>
+                <span>+</span>
+                <div class="sensor" id="calc-pos-2">2</div>
+                <span>+</span>
+                <div class="sensor" id="calc-pos-4">4</div>
+                <span>=</span>
+            </div>
             <div>
                 <div>Sensor</div>
                 <div class="box" id="position-box" style="color: #aaa;">?</div>
+            </div>
+            <div>
+                <div class="sensor" id="calc-pos-a">a</div><br/>
+                <span class="accept-pos" id="accept-pos">→</span><br/>
+                <div class="sensor" id="calc-pos-b">b</div>
             </div>
             <div>
                 <div>Position</div>
@@ -297,18 +383,24 @@
         const positionBoxApproved = document.getElementById("position-box-approved");
         const directionBox = document.getElementById("direction-box");
 
-        const sensorTop = document.getElementById("hall-sensor-top");
-        const sensorDir2 = document.getElementById("hall-sensor-2");
-        const sensorDir1 = document.getElementById("hall-sensor-1");
-        const sensorDir0 = document.getElementById("hall-sensor-0");
-        const sensorBottom = document.getElementById("hall-sensor-bottom");
+        const sensorDirA = document.getElementById("hall-sensor-a");
+        const sensorPos4 = document.getElementById("hall-sensor-4");
+        const sensorPos2 = document.getElementById("hall-sensor-2");
+        const sensorPos1 = document.getElementById("hall-sensor-1");
+        const sensorDirB = document.getElementById("hall-sensor-b");
+
+        const calcPos4 = document.getElementById("calc-pos-4");
+        const calcPos2 = document.getElementById("calc-pos-2");
+        const calcPos1 = document.getElementById("calc-pos-1");
+        const calcPosA = document.getElementById("calc-pos-a");
+        const calcPosB = document.getElementById("calc-pos-b");
 
         let dragging = false;
         let offsetX = 0;
         let lastX = 0;
 
-        let previousTop = false;
-        let previousBottom = false;
+        let previousDirA = false;
+        let previousDirB = false;
 
         handle.addEventListener('mousedown', e => {
             dragging = true;
@@ -343,6 +435,14 @@
 
         updateSensors()
 
+        function setSensorState(sensor, isActive) {
+            if (isActive) {
+                sensor.classList.add("active");
+            } else {
+                sensor.classList.remove("active");
+            }
+        }
+
         function updateSensors() {
             const bits = gate.querySelectorAll(".bit.one");
             sensors.forEach(sensor => sensor.classList.remove("active"));
@@ -356,19 +456,25 @@
                 });
             });
 
-            dirBottom = sensorBottom.classList.contains("active");
-            dirTop = sensorTop.classList.contains("active");
+            dirA = sensorDirA.classList.contains("active");
+            dirB = sensorDirB.classList.contains("active");
+            pos1 = sensorPos1.classList.contains("active") ? 1 : 0;
+            pos2 = sensorPos2.classList.contains("active") ? 2 : 0;
+            pos4 = sensorPos4.classList.contains("active") ? 4 : 0;
 
-            position = (sensorDir0.classList.contains("active")) ? 1 : 0;
-            position += (sensorDir1.classList.contains("active")) ? 2 : 0;
-            position += (sensorDir2.classList.contains("active")) ? 4 : 0;
+            position = pos1 + pos2 + pos4
+            setSensorState(calcPos1, pos1);
+            setSensorState(calcPos2, pos2);
+            setSensorState(calcPos4, pos4);
+            setSensorState(calcPosA, dirA);
+            setSensorState(calcPosB, dirB);
 
             // display the detected position
             // (might be wrong if hall sensor is not centered)
             positionBox.textContent = position;
 
             // only if bottom and top sensors are active the position is valid
-            if (dirBottom && dirTop) {
+            if (dirB && dirA) {
                 positionBoxApproved.textContent = position;
             }
 
@@ -378,17 +484,17 @@
             // bottom-sensor ...01100...01100...01100...
             //
             // check if the bottom or top sensor changed
-            if ((dirBottom != previousBottom) || (dirTop != previousTop)) {
+            if ((dirB != previousDirB) || (dirA != previousDirA)) {
                 // we detect a direction change only top and bottom sensor now
                 // have different states, but had the same state before
-                if ((dirBottom != dirTop) && (previousBottom == previousTop)) {
-                    let dir = dirTop;
-                    if (previousBottom)
+                if ((dirB != dirA) && (previousDirB == previousDirA)) {
+                    let dir = dirA;
+                    if (previousDirB)
                         dir = !dir;
                     directionBox.textContent = dir ? '→' : '←';
                 }
-                previousBottom = dirBottom;
-                previousTop = dirTop;
+                previousDirB = dirB;
+                previousDirA = dirA;
             }
         }
 
