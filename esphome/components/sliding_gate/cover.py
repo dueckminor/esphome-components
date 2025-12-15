@@ -10,7 +10,7 @@ sliding_gate_ns = cg.esphome_ns.namespace('sliding_gate')
 SlidingGateComponent = sliding_gate_ns.class_('SlidingGateComponent', cover.Cover, cg.Component)
 
 CONFIG_SCHEMA = cv.All(
-    cover.COVER_SCHEMA
+    cover._COVER_SCHEMA
     .extend(cv.COMPONENT_SCHEMA)
     .extend({
         cv.GenerateID(): cv.declare_id(SlidingGateComponent),

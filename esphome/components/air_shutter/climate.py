@@ -10,7 +10,7 @@ air_shutter_ns = cg.esphome_ns.namespace("air_shutter")
 AirShutter = air_shutter_ns.class_("AirShutter", climate.Climate, cg.Component)
 
 CONFIG_SCHEMA = cv.All(
-    climate.CLIMATE_SCHEMA
+    climate._CLIMATE_SCHEMA
     .extend(cv.COMPONENT_SCHEMA)
     .extend({
         cv.GenerateID(): cv.declare_id(AirShutter),
