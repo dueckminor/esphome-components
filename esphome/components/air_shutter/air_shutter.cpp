@@ -62,7 +62,8 @@ void AirShutter::loop() {
       diff = should - have;
     }
 
-    if (diff <= 0.2) { 
+    if (diff <= 0.2) {
+      ESP_LOGD(TAG,"shutter is in perfect position",
       return;
     }
 
