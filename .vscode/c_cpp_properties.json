@@ -1,0 +1,35 @@
+{
+    "configurations": [
+        {
+            "name": "Mac",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/.venv/lib/python*/site-packages/esphome/core",
+                "${workspaceFolder}/.venv/lib/python*/site-packages/esphome/components/**"
+            ],
+            "defines": [
+                "ARDUINO",
+                "ESP8266",
+                "USE_ESP8266"
+            ],
+            "compilerArgs": [
+                "-Wno-unknown-pragmas"
+            ],
+            "forcedInclude": [],
+            "macFrameworkPath": [],
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "macos-clang-arm64",
+            "compileCommands": "",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}",
+                    "${workspaceFolder}/.venv/lib/python*/site-packages/esphome"
+                ],
+                "limitSymbolsToIncludedHeaders": false
+            }
+        }
+    ],
+    "version": 4
+}

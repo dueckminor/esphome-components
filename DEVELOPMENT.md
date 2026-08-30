@@ -39,6 +39,30 @@ brew install clang-format
 # sudo apt-get install clang-format
 ```
 
+## VS Code Setup
+
+The repository includes VS Code configuration for the best development experience:
+
+**Recommended Extensions** (VS Code will prompt you to install):
+- **Ruff** - Python linting and formatting
+- **Clang-Format** - C++ formatting
+- **Python** - Python language support
+- **C/C++** - C++ IntelliSense and debugging
+
+**Features:**
+- ✅ Auto-format on save (Python and C++)
+- ✅ C++ IntelliSense with ESPHome headers (autocomplete, go-to-definition)
+- ✅ Auto-fix lint issues on save
+- ✅ Import organization
+
+**C++ IntelliSense Notes:**
+- Requires virtual environment (`.venv`) to find ESPHome headers
+- Arduino framework headers (ArduinoJson.h, Esp.h, etc.) are not available in the dev environment
+- IntelliSense error checking is disabled to avoid false positives from missing framework headers
+- You'll still get **autocomplete, go-to-definition, and hover documentation** for ESPHome code
+- **Use ESPHome compile** to catch syntax errors: `esphome compile tests/components/*/test.yaml`
+- The linting workflow will catch errors in CI
+
 ## Quick Start
 
 ### Check code (same as CI)

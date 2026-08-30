@@ -22,5 +22,12 @@
     // Ruff settings
     "ruff.nativeServer": "on",
     // Clang-format settings
-    "clang-format.style": "file"
+    "clang-format.style": "file",
+    // C++ IntelliSense settings
+    "C_Cpp.default.cppStandard": "c++17",
+    "C_Cpp.default.cStandard": "c17",
+    "C_Cpp.intelliSenseEngine": "default",
+    "C_Cpp.errorSquiggles": "disabled",
+    "C_Cpp.intelliSenseEngineFallback": "enabled",
+    "C_Cpp.loggingLevel": "Warning"
 }
