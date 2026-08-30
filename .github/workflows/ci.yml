@@ -1,0 +1,51 @@
+name: ESPHome CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  compile:
+    name: Compile ESPHome components
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        esphome:
+          - stable
+          - dev
+        component:
+          - sliding_gate
+          - air_shutter
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install ESPHome
+        run: |
+          python -m pip install --upgrade pip
+          if [ "${{ matrix.esphome }}" = "dev" ]; then
+            python -m pip install git+https://github.com/esphome/esphome.git@dev
+          else
+            python -m pip install esphome
+          fi
+
+      - name: Validate configuration
+        working-directory: tests/components/${{ matrix.component }}
+        run: esphome config test.yaml
+
+      - name: Compile firmware
+        working-directory: tests/components/${{ matrix.component }}
+        run: esphome compile test.yaml

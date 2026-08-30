@@ -1,0 +1,56 @@
+esphome:
+  name: test-air-shutter
+
+esp8266:
+  board: nodemcuv2
+
+external_components:
+  - source:
+      type: local
+      path: ../../../esphome/components
+    components:
+      - air_shutter
+
+logger:
+
+i2c:
+
+pcf8574:
+  - id: pcf8574_hub
+    address: 0x20
+
+sensor:
+  - platform: template
+    id: current_temperature
+    internal: true
+
+  - platform: template
+    id: target_temperature
+    internal: true
+
+switch:
+  - platform: gpio
+    id: out0
+    pin:
+      pcf8574: pcf8574_hub
+      number: 0
+      mode:
+        output: true
+      inverted: true
+
+  - platform: gpio
+    id: out1
+    pin:
+      pcf8574: pcf8574_hub
+      number: 1
+      mode:
+        output: true
+      inverted: true
+
+climate:
+  - platform: air_shutter
+    id: shutter
+    current_temperature: current_temperature
+    temperature: target_temperature
+    switch_cool_less: out0
+    switch_cool_more: out1
