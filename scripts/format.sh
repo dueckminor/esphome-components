@@ -14,7 +14,7 @@ if ! command -v clang-format &> /dev/null; then
     echo "⚠️  clang-format not found, skipping C++ formatting"
     echo "   Install with: brew install clang-format"
 else
-    find esphome/components -name '*.cpp' -o -name '*.h' -exec clang-format -i {} \;
+    find esphome/components \( -name '*.cpp' -o -name '*.h' \) -exec clang-format -i {} \;
     echo "✓ C++ code formatted"
 fi
 
