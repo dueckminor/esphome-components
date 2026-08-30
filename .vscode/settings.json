@@ -1,0 +1,26 @@
+{
+    // Format on save
+    "editor.formatOnSave": true,
+    // Python-specific settings
+    "[python]": {
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.fixAll": "explicit",
+            "source.organizeImports": "explicit"
+        }
+    },
+    // C/C++ settings
+    "[cpp]": {
+        "editor.defaultFormatter": "xaver.clang-format",
+        "editor.formatOnSave": true
+    },
+    "[c]": {
+        "editor.defaultFormatter": "xaver.clang-format",
+        "editor.formatOnSave": true
+    },
+    // Ruff settings
+    "ruff.nativeServer": "on",
+    // Clang-format settings
+    "clang-format.style": "file"
+}
