@@ -1,0 +1,146 @@
+name: ESPHome CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  compile:
+    name: Compile ESPHome components
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        esphome:
+          - stable
+          - dev
+        component:
+          - sliding_gate
+          - air_shutter
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install ESPHome
+        run: |
+          python -m pip install --upgrade pip
+          if [ "${{ matrix.esphome }}" = "dev" ]; then
+            python -m pip install git+https://github.com/esphome/esphome.git@dev
+          else
+            python -m pip install esphome
+          fi
+
+      - name: Create test configuration
+        run: |
+          mkdir -p test-config
+
+          if [ "${{ matrix.component }}" = "sliding_gate" ]; then
+            cat > test-config/test.yaml <<'EOF'
+          esphome:
+            name: test-sliding-gate
+
+          esp8266:
+            board: nodemcuv2
+
+          external_components:
+            - source:
+                type: local
+                path: ../esphome/components
+              components:
+                - sliding_gate
+
+          logger:
+
+          cover:
+            - platform: sliding_gate
+              id: gate
+              device_class: gate
+              pin_dir_0: D2
+              pin_pos_0: D0
+              pin_pos_1: D5
+              pin_pos_2: D6
+              pin_dir_1: D7
+              pin_relay: D1
+          EOF
+          fi
+
+          if [ "${{ matrix.component }}" = "air_shutter" ]; then
+            cat > test-config/test.yaml <<'EOF'
+          esphome:
+            name: test-air-shutter
+
+          esp8266:
+            board: nodemcuv2
+
+          external_components:
+            - source:
+                type: local
+                path: ../esphome/components
+              components:
+                - air_shutter
+
+          logger:
+
+          i2c:
+
+          pcf8574:
+            - id: pcf8574_hub
+              address: 0x20
+
+          sensor:
+            - platform: template
+              id: current_temperature
+              internal: true
+
+            - platform: template
+              id: target_temperature
+              internal: true
+
+          switch:
+            - platform: gpio
+              id: out0
+              pin:
+                pcf8574: pcf8574_hub
+                number: 0
+                mode:
+                  output: true
+                inverted: true
+
+            - platform: gpio
+              id: out1
+              pin:
+                pcf8574: pcf8574_hub
+                number: 1
+                mode:
+                  output: true
+                inverted: true
+
+          climate:
+            - platform: air_shutter
+              id: air_shutter
+              current_temperature: current_temperature
+              temperature: target_temperature
+              switch_cool_less: out0
+              switch_cool_more: out1
+          EOF
+          fi
+
+      - name: Validate configuration
+        working-directory: test-config
+        run: esphome config test.yaml
+
+      - name: Compile firmware
+        working-directory: test-config
+        run: esphome compile test.yaml
