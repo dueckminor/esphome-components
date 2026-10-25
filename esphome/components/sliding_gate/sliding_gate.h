@@ -3,7 +3,6 @@
 #include "esphome/components/cover/cover.h"
 #include "esphome/core/automation.h"
 #include "esphome/core/component.h"
-#include "esphome/core/controller.h"
 #include "esphome/core/hal.h"
 
 namespace esphome {
